@@ -11,6 +11,27 @@
 				<div class="item">
 					<h5>{{ venue.name }}</h5>
 				</div>
+				<button data-id="{{ venue.id }}" class="delete-button">&cross;</button>
+				<script>
+					const deletebuttons = document.querySelectorAll('.delete-button');
+					for (let i=0 ;i<deletebuttons.length;i++){
+						const deletebtn=deletebuttons[i];
+						deletebtn.onclick= function(e){
+							console.log(e.target);
+							let id1=e.target.dataset['id'];
+							console.log(id1);
+							fetch('/venues/'+ id1,{
+								method:'DELETE'
+							}).then(function() {
+								window.location="http://localhost:5000";
+							})
+							.catch(function() {
+								//document.getElementById('error').className = '';
+								console.log("reached catch")
+							});
+						};
+					}
+				</script>
 			</a>
 		</li>
 		{% endfor %}
