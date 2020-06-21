@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
-from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField, ValidationError
+from wtforms.validators import DataRequired, AnyOf, URL, Length
 
 class ShowForm(Form):
     artist_id = StringField(
@@ -116,8 +116,27 @@ class VenueForm(Form):
     facebook_link = StringField(
         'facebook_link', validators=[URL()]
     )
+    def validate_phone(form, field):
+        if not re.search(r"^[0-9]{3}-[0-9]{3}-[0-9]{4}$", field.data):
+            raise ValidationError("Invalid phone number.")
+
+    def validate_genres(form, field):
+        genres_values = [choice[1] for choice in genres_choices]
+        for value in field.data:
+            if value not in genres_values:
+                raise ValidationError('Invalid genres value.')
 
 class ArtistForm(Form):
+    def validate_phone(form, field):
+        if not re.search(r"^[0-9]{3}-[0-9]{3}-[0-9]{4}$", field.data):
+            raise ValidationError("Invalid phone number.")
+
+    def validate_genres(form, field):
+        genres_values = [choice[1] for choice in genres_choices]
+        for value in field.data:
+            if value not in genres_values:
+                raise ValidationError('Invalid genres value.')
+            
     name = StringField(
         'name', validators=[DataRequired()]
     )
